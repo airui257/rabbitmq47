@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <!--导入外部属性配置文件 非必须的-->
+    <properties resource="generator/generator.properties"/>
+    
+	<classPathEntry location="E:\repositories\mvnReposotories\mysql\mysql-connector-java\5.1.46\mysql-connector-java-5.1.46.jar"/>
+
+    <!--指定特定数据库的jdbc驱动jar包的位置 非必须的-->
+    <!--<classPathEntry location="${jdbc.driverLocation}"/>-->
+    
+	<!-- context标签至少指定一个 id属性是必须指定的，确定唯一性 -->
+	<!-- 
+		defaultModelType：这个属性定义了MBG如何生成实体类。
+			conditional：默认值
+			hierarchical(按等级划分的)：
+			flat(单调的)：只为每张表生成一个实体类。
+		targetRuntime：
+			MyBatis3(默认值)：
+			MyBatis3Simple：不会生成与Example相关的方法。
+		introspectedColumnImpl：可以指定扩展org.mybatis.generator.api.Introspected Column类的实现类。
+	 -->
+    <context id="Mysql" defaultModelType="flat" targetRuntime="MyBatis3Simple">
+    
+		
+			<!-- context的子标签：
+				property(0个或多个)：区分关键字
+					autoDelimitKeywords、beginningDelimiter、endingDelimiter；javaFileEncoding、javaFormatter、xmlFormatter
+				plugin(0个或多个)：
+				commentGenerator(0个或1个)：
+				jdbcConnection(1个)：
+				jdbcTypeResolver(0个或1个)：
+				javaModelGenetator(1个)：
+				sqlMapGenerator(0个或1个)：
+				javaClientGenerator(0个或1个)：
+				table(1个或多个)： -->
+		
+<!--     	<property name="autoDelimitKeywords" value="true"/> -->
+    	<property name="beginningDelimiter" value="`"/>
+    	<property name="endingDelimiter" value="`"/>
+    	<property name="javaFileEncoding" value="utf-8"/>
+    	
+    	<!-- mapper -->
+        <!-- <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="com.power.frl.dao.util.PowerMapper"/>
+        </plugin> -->
+        <!-- 缓存插件 -->
+        <!-- <plugin type=""></plugin> -->
+        
+        
+        
+
+        <!-- optional，旨在创建class时，对注释进行控制 -->
+        <commentGenerator>
+            <property name="javaFileEncoding" value="UTF-8"/>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!--jdbc的数据库连接 -->
+        <jdbcConnection
+                driverClass="${jdbc.driverClass}"
+                connectionURL="${jdbc.connectionURL}"
+                userId="${jdbc.userId}"
+                password="${jdbc.password}">
+        </jdbcConnection>
+
+        <!-- 非必需，类型处理器，在数据库类型和java类型之间的转换控制-->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+
+        <!-- Model模型生成器,用来生成含有主键key的类，记录类 以及查询Example类
+                    targetPackage     指定生成的model生成所在的包名
+                    targetProject     指定在该项目下所在的路径
+        -->
+        <!-- targetProject:生成PO类的位置 -->
+        <javaModelGenerator
+                targetPackage="cn.feng.dao.model"
+                targetProject="my-mybatis-generator3/src/main/java">
+            <!-- 是否允许子包，即targetPackage.schemaName.tableName -->
+            <property name="enableSubPackages" value="false"/>
+            <!-- 是否对model添加 构造函数 -->
+            <property name="constructorBased" value="true"/>
+            <!-- 是否对类CHAR类型的列的数据进行trim操作 -->
+            <property name="trimStrings" value="true"/>
+            <!-- 建立的Model对象是否 不可改变  即生成的Model对象不会有 setter方法，只有构造方法 -->
+            <property name="immutable" value="false"/>
+        </javaModelGenerator>
+
+
+        <!--Mapper映射文件生成所在的目录 为每一个数据库的表生成对应的SqlMap文件 -->
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="my-mybatis-generator3/src/main/resources">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+
+        <!-- 客户端代码，生成易于使用的针对Model对象和XML配置文件 的代码
+                type="ANNOTATEDMAPPER",生成Java Model 和基于注解的Mapper对象
+                type="MIXEDMAPPER",生成基于注解的Java Model 和相应的Mapper对象
+                type="XMLMAPPER",生成SQLMap XML文件和独立的Mapper接口
+        -->
+        <javaClientGenerator targetPackage="cn.feng.dao.mapper"
+                             targetProject="my-mybatis-generator3/src/main/java" type="XMLMAPPER">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <table tableName="%">
+            <!--mysql 配置-->
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+            <!--oracle 配置-->
+            <!--<generatedKey column="id" sqlStatement="select SEQ_{1}.nextval from dual" identity="false" type="pre"/>-->
+        </table>
+    </context>
+</generatorConfiguration>
