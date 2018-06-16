@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <!--导入外部属性配置文件 非必须的-->
+    <properties resource="generator/generator.properties"/>
+
+    <!--指定特定数据库的jdbc驱动jar包的位置 非必须的-->
+    <!--<classPathEntry location="${jdbc.driverLocation}"/>-->
+    
+	<!-- context标签至少指定一个 id属性是必须指定的，确定唯一性 -->
+	<!-- 
+		defaultModelType：这个属性定义了MBG如何生成实体类。
+			conditional：默认值
+			hierarchical(按等级划分的)：
+			flat(单调的)：只为每张表生成一个实体类。
+		targetRuntime：
+			MyBatis3(默认值)：
+			MyBatis3Simple：不会生成与Example相关的方法。
+		introspectedColumnImpl：可以指定扩展org.mybatis.generator.api.Introspected Column类的实现类。
+	 -->
+    <context id="Mysql" defaultModelType="flat" targetRuntime="MyBatis3">
+    
+		<!-- 
+			context的子标签：
+				property(0个或多个)：区分关键字
+					autoDelimitKeywords、beginningDelimiter、endingDelimiter；javaFileEncoding、javaFormatter、xmlFormatter
+				plugin(0个或多个)：
+				commentGenerator(0个或1个)：
+				jdbcConnection(1个)：
+				jdbcTypeResolver(0个或1个)：
+				javaModelGenetator(1个)：
+				sqlMapGenerator(0个或1个)：
+				javaClientGenerator(0个或1个)：
+				table(1个或多个)：
+		 -->
+<!--     	<property name="autoDelimitKeywords" value="true"/> -->
+    	<property name="beginningDelimiter" value="`"/>
+    	<property name="endingDelimiter" value="`"/>
+    	
+    	<!-- 通用mapper接口 -->
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="cn.feng.dao.util.MyMapper"/>
+        </plugin>
+        <!-- 缓存插件 -->
+        <plugin type="org.mybatis.generator.plugins.CachePlugin">
+        	<property name="cache_eviction" value="LRU"/>
+        	<property name="cache_size" value="1024"/>
+			<!-- 增加这个配置后，生成的mapper.xml文件中会增加如下的缓存相关配置。 -->        	
+        	<property name="LRU" value="1024"/>
+        </plugin>
+        
+        <!-- commentGenerator该标签用来配置如何生成注释信息 -->
+        <commentGenerator>
+            <property name="javaFileEncoding" value="UTF-8"/>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>
+            <property name="addRemarkComments" value="true"/>
+        </commentGenerator>
+
+        <!-- jdbcConnection用于指定MBG要连接的数据库信息，该标签必选，并且只能有一个 -->
+        <jdbcConnection
+                driverClass="${jdbc.driverClass}"
+                connectionURL="${jdbc.connectionURL}"
+                userId="${jdbc.userId}"
+                password="${jdbc.password}">
+                <!-- 此属性配置oracle的注释信息 -->
+<!--                 <property name="remarksReporting" value="true"/> -->
+        </jdbcConnection>
+
+        <!-- javaTypeResolver该标签的配置用来指定JDBC类型和Java类型如何转换，最多可以配置一个 -->
+        <javaTypeResolver>
+        	<!-- forceBigDecimals设置为true，name一定会使用BigDecimal -->
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+
+        <!-- javaModelGenerator用来控制生成的实体类
+        		targetPackage生成实体类存放的包名。
+        		targetProject指定目标项目路径，可以使用相对路径或绝对路径。
+        -->
+        <javaModelGenerator
+                targetPackage="cn.feng.dao.model"
+                targetProject="src/main/java">
+            <!-- constructorBased为true生成空参构造，为false生成setter方式。默认false， -->
+            <property name="constructorBased" value="true"/>
+            <!-- 是否允许子包，即targetPackage.schemaName.tableName -->
+            <property name="enableSubPackages" value="false"/>
+            <!-- 建立的Model对象是否 不可改变  即生成的Model对象不会有 setter方法，只有构造方法 -->
+            <property name="immutable" value="false"/>
+            <!-- 是否对类CHAR类型的列的数据进行trim操作 -->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+
+        <!-- sqlMapGenerator用于配置SQL映射生成器(mapper.xml文件)的属性 -->
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="src/main/resources">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+
+        <!-- javaClientGenerator用于配置Java客户端生成器(mapper接口)的属性，可选，最多配一个。不配不生成mapper接口。
+        		type：用于选择客户端代码(mapper接口)生成器，可以自定义实现，需要继承org.mybatis.generator.codegen.AbstractJavaClientenerator类
+        					必须有一个空参构造。
+                type="ANNOTATEDMAPPER",生成Java Model 和基于注解的Mapper对象
+                type="MIXEDMAPPER",生成基于注解的Java Model 和相应的Mapper对象
+                type="XMLMAPPER",生成SQLMap XML文件和独立的Mapper接口，推荐使用，利于维护
+        -->
+        <javaClientGenerator targetPackage="cn.feng.dao.mapper"
+                             targetProject="src/main/java" type="XMLMAPPER">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <table tableName="%">
+            <!--mysql 配置-->
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+            <!--oracle 配置-->
+            <!--<generatedKey column="id" sqlStatement="select SEQ_{1}.nextval from dual" identity="false" type="pre"/>-->
+            <!-- 重命名列 -->
+<!--             <columnRenamingRule searchString=""/> -->
+            <!-- 重写列名 -->
+<!--             <columnOverride column=""></columnOverride> -->
+			<!-- 要忽略不生成的列 -->
+<!-- 			<ignoreColumn column=""/> -->
+        </table>
+    </context>
+</generatorConfiguration>
