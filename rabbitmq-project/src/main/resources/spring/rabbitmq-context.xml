@@ -17,7 +17,7 @@
 	<!-- MQ的管理，包括队列、交换器等 -->
 	<rabbit:admin connection-factory="connectionFactory" />
 
-	<!-- 定义队列，自动声明 -->
+	<!-- 定义队列，自动声明：如果交换机不存在就创建，如果存在就忽略 -->
 	<rabbit:queue name="myQueue" auto-declare="true"/>
 	
 	<!-- 定义交换器，自动声明 -->
